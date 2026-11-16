@@ -330,3 +330,11 @@ node server.js
 
 ----
 
+### JPG To PNG converter:
+keerthana@Keerthanas-MacBook-Air frontend % npx --yes sharp-cli -i ./assets/images/logo.jpg -o ./assets/images/logo.png resize 1024 1024
+
+/Users/keerthana/Desktop/learn_react_native/frontend/assets/images/logo.png
+keerthana@Keerthanas-MacBook-Air frontend % file ./assets/images/logo.png
+
+./assets/images/logo.png: PNG image data, 1024 x 1024, 8-bit/colorRGB, non-interlaced
+keerthana@Keerthanas-MacBook-Air frontend % 
