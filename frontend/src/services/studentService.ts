@@ -14,6 +14,12 @@ export const getStudents = async () => {
   return response.data;
 };
 
+// GET - Fetch a single student by ID
+export const getStudent = async (id: number) => {
+  const response = await api.get(`/students/${id}`);
+  return response.data;
+};
+
 // POST - Add a student
 export const addStudent = async (student: Omit<Student, 'id'>) => {
   const response = await api.post('/students', student);

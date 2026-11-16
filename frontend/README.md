@@ -338,3 +338,8 @@ keerthana@Keerthanas-MacBook-Air frontend % file ./assets/images/logo.png
 
 ./assets/images/logo.png: PNG image data, 1024 x 1024, 8-bit/colorRGB, non-interlaced
 keerthana@Keerthanas-MacBook-Air frontend % 
+
+-----
+
+#### Get IP to run the back end code in mobile too:
+ipconfig getifaddr en0
