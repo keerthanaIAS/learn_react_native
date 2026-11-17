@@ -7,6 +7,8 @@ import {
   Platform,
   StyleSheet,
 } from 'react-native';
+import BottomNavigation from '../components/BottomNavigation';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 function WebHeader() {
   return (
@@ -21,6 +23,12 @@ function WebHeader() {
         <Pressable onPress={() => router.push('/students')}>
           <Text style={styles.link}>Students</Text>
         </Pressable>
+        <Pressable onPress={() => router.push("/permissions")}>
+          <Text style={styles.link}>Explore Device Features</Text>
+        </Pressable>
+        <Pressable onPress={() => router.push("/drawer-demo")}>
+          <Text style={styles.link}>Drawer Demo</Text>
+        </Pressable>
       </View>
     </View>
   );
@@ -30,24 +38,35 @@ export default function RootLayout() {
   const isWeb = Platform.OS === 'web';
 
   return (
-    <Stack
-      screenOptions={{
-        header: isWeb
-          ? () => <WebHeader />
-          : undefined,
+    <>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <Stack
+          screenOptions={{
+            header: isWeb
+              ? () => <WebHeader />
+              : undefined,
 
-        headerStyle: {
-          backgroundColor: '#208AEF',
-        },
-        headerTintColor: '#fff',
-      }}
-    >
-      <Stack.Screen name="index" options={{ title: 'Home' }} />
-      <Stack.Screen name="students/index" options={{ title: 'Students' }} />
-      <Stack.Screen name="students/add" options={{ title: 'Add Student' }} />
-      <Stack.Screen name="students/[id]" options={{ title: 'Student Details' }} />
-      <Stack.Screen name="students/edit/[id]" options={{ title: 'Edit Student' }} />
-    </Stack>
+            headerStyle: {
+              backgroundColor: '#208AEF',
+            },
+            headerTintColor: '#fff',
+          }}
+        >
+          <Stack.Screen name="index" options={{ title: 'Home' }} />
+          <Stack.Screen name="students/index" options={{ title: 'Students' }} />
+          <Stack.Screen name="students/add" options={{ title: 'Add Student' }} />
+          <Stack.Screen name="students/[id]" options={{ title: 'Student Details' }} />
+          <Stack.Screen name="students/edit/[id]" options={{ title: 'Edit Student' }} />
+          <Stack.Screen
+            name="drawer-demo"
+            options={{
+              headerShown: false,
+            }}
+          />
+        </Stack>
+        {!isWeb && <BottomNavigation />}
+      </GestureHandlerRootView>
+    </>
   );
 }
 

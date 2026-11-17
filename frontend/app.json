@@ -14,7 +14,19 @@
       "favicon": "./assets/images/logo.png"
     },
     "android": {
-      "icon": "./assets/images/logo.png"
+      "icon": "./assets/images/logo.png",
+      "permissions": [
+        "android.permission.MODIFY_AUDIO_SETTINGS",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.READ_CONTACTS",
+        "android.permission.WRITE_CONTACTS"
+      ],
+      "package": "com.anonymous.frontend"
     },
     "plugins": [
       "expo-router",
@@ -25,7 +37,50 @@
           "image": "./assets/images/logo.png",
           "imageWidth": 76
         }
-      ]
+      ],
+      "expo-maps",
+      "expo-audio",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow access to photos for this demo.",
+          "cameraPermission": "Allow access to the camera for this demo.",
+          "microphonePermission": false
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow access to the camera.",
+          "microphonePermission": "Allow microphone access for recording.",
+          "recordAudioAndroid": true
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Allow access to your current location."
+        }
+      ],
+      [
+        "expo-contacts",
+        {
+          "contactsPermission": "Allow access to your device contacts."
+        }
+      ],
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "Allow microphone access for audio recording."
+        }
+      ],
+      [
+        "expo-contacts",
+        {
+          "contactsPermission": "Allow access to contacts to display your contacts."
+        }
+      ],
+      "expo-notifications"
     ],
     "experiments": {
       "typedRoutes": true,

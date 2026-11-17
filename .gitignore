@@ -38,6 +38,6 @@ yarn-error.*
 
 example
 
-# generated native folders
-/ios
-/android
+# Generated native projects (Expo CNG)
+frontend/android/
+frontend/ios/
