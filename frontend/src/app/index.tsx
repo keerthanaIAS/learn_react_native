@@ -113,7 +113,42 @@ const categories: {
         icon: 'finger-print-outline',
         route: '/auth/biometric-demo',
         color: '#9C27B0',
-      }
+      },
+      {
+        title: 'QR Scanner',
+        subtitle: 'Scan QR codes',
+        icon: 'qr-code-outline',
+        route: '/sensors/qr-scanner-demo',
+        color: '#4CAF50',
+      },
+      {
+        title: 'Device Status',
+        subtitle: 'Device Status Demo',
+        icon: 'phone-portrait-outline',
+        route: '/sensors/device-status-demo',
+        color: '#235adc',
+      },
+      {
+        title: 'Vibration & Device Info',
+        subtitle: 'Haptics and device information',
+        icon: 'phone-portrait-sharp',
+        route: '/sensors/vibration-device-demo',
+        color: '#ec7b46',
+      },
+      {
+        title: 'Motion Sensors',
+        subtitle: 'Accelerometer and Gyroscope',
+        icon: 'speedometer-outline',
+        route: '/sensors/motion-sensors-demo',
+        color: '#fd56f2',
+      },
+      {
+        title: 'Fitness Demo',
+        subtitle: 'Step counter and tracking',
+        icon: 'walk-outline',
+        route: '/sensors/fitness-demo',
+        color: '#3c6e6a',
+      },
     ],
   },
 ];
