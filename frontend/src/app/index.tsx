@@ -107,6 +107,13 @@ const categories: {
         route: '/search-filter-pagination',
         color: '#009688',
       },
+      {
+        title: 'Biometric Auth',
+        subtitle: 'Fingerprint/Face ID demo',
+        icon: 'finger-print-outline',
+        route: '/auth/biometric-demo',
+        color: '#9C27B0',
+      }
     ],
   },
 ];
