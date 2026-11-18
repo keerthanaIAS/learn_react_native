@@ -29,10 +29,16 @@ const tabs = [
         activeIcon: 'cog',
     },
     {
-        title: "Drawer Demo",
+        title: "Drawer",
         path: "/drawer-demo",
         icon: "menu-outline",
         activeIcon: "menu",
+    },
+    {
+        title: "OTP Verification",
+        path: "/otp-demo",
+        icon: "lock-closed-outline",
+        activeIcon: "lock-closed",
     }
 ] as const;
 

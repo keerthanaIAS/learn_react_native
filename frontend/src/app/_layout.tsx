@@ -29,6 +29,11 @@ function WebHeader() {
         <Pressable onPress={() => router.push("/drawer-demo")}>
           <Text style={styles.link}>Drawer Demo</Text>
         </Pressable>
+        <Pressable
+          onPress={() => router.push("/otp-demo")}
+        >
+          <Text style={styles.link}>OTP Verification Demo</Text>
+        </Pressable>
       </View>
     </View>
   );

@@ -30,6 +30,9 @@ let students = [
     },
 ];
 
+// Temporary OTP storage
+const otpStorage = new Map();
+
 // Home API
 app.get('/', (req, res) => {
     res.send('Student Management Backend Running!');
@@ -139,6 +142,139 @@ app.delete('/students/:id', (req, res) => {
     res.json({
         message: 'Student deleted successfully',
         student: deletedStudent
+    });
+});
+
+// Send OTP
+app.post('/send-otp', (req, res) => {
+    const { mobile } = req.body;
+
+    if (!mobile || !/^[6-9]\d{9}$/.test(mobile)) {
+        return res.status(400).json({
+            success: false,
+            message: 'Enter a valid 10-digit mobile number'
+        });
+    }
+
+    // Generate random 6-digit OTP
+    const otp = String(
+        Math.floor(100000 + Math.random() * 900000)
+    );
+
+    // Store OTP with expiry
+    otpStorage.set(mobile, {
+        otp,
+        expiresAt: Date.now() + 5 * 60 * 1000,
+        createdAt: Date.now(),
+        attempts: 0
+    });
+
+    console.log(`Demo OTP for ${mobile}: ${otp}`);
+
+    res.json({
+        success: true,
+        message: 'Demo OTP generated successfully',
+        demoOtp: otp,
+        expiresIn: 300
+    });
+});
+
+// Verify OTP
+app.post('/verify-otp', (req, res) => {
+    const { mobile, otp } = req.body;
+
+    if (!mobile || !otp) {
+        return res.status(400).json({
+            success: false,
+            message: 'Mobile number and OTP are required'
+        });
+    }
+
+    const savedOtp = otpStorage.get(mobile);
+
+    if (!savedOtp) {
+        return res.status(400).json({
+            success: false,
+            message: 'Please generate OTP first'
+        });
+    }
+
+    if (Date.now() > savedOtp.expiresAt) {
+        otpStorage.delete(mobile);
+
+        return res.status(400).json({
+            success: false,
+            message: 'OTP expired. Please request a new OTP'
+        });
+    }
+
+    if (savedOtp.attempts >= 5) {
+        otpStorage.delete(mobile);
+
+        return res.status(429).json({
+            success: false,
+            message: 'Too many incorrect attempts. Request a new OTP'
+        });
+    }
+
+    if (String(otp) !== savedOtp.otp) {
+        savedOtp.attempts++;
+
+        return res.status(400).json({
+            success: false,
+            message: 'Incorrect OTP',
+            attemptsRemaining: 5 - savedOtp.attempts
+        });
+    }
+
+    // OTP successfully verified
+    otpStorage.delete(mobile);
+
+    res.json({
+        success: true,
+        verified: true,
+        message: 'Mobile number verified successfully!'
+    });
+});
+
+// Resend OTP
+app.post('/resend-otp', (req, res) => {
+    const { mobile } = req.body;
+
+    if (!mobile || !/^[6-9]\d{9}$/.test(mobile)) {
+        return res.status(400).json({
+            success: false,
+            message: 'Invalid mobile number'
+        });
+    }
+
+    const savedOtp = otpStorage.get(mobile);
+
+    if (savedOtp && Date.now() - (savedOtp.createdAt || 0) < 60000) {
+        return res.status(429).json({
+            success: false,
+            message: 'Please wait before requesting another OTP'
+        });
+    }
+
+    const otp = String(
+        Math.floor(100000 + Math.random() * 900000)
+    );
+
+    otpStorage.set(mobile, {
+        otp,
+        expiresAt: Date.now() + 5 * 60 * 1000,
+        createdAt: Date.now(),
+        attempts: 0
+    });
+
+    console.log(`New demo OTP for ${mobile}: ${otp}`);
+
+    res.json({
+        success: true,
+        message: 'New demo OTP generated',
+        demoOtp: otp,
+        expiresIn: 300
     });
 });
 
