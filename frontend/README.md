@@ -343,3 +343,204 @@ keerthana@Keerthanas-MacBook-Air frontend %
 
 #### Get IP to run the back end code in mobile too:
 ipconfig getifaddr en0
+
+
+------
+
+###### Sentry setup:
+keerthana@Mac-634 frontend % npx @sentry/wizard@latest -i reactNative
+
+┌   Sentry React Native Wizard 
+│
+◇   ────────────────────────────────────────────────────────────────────────────────────────────────╮
+│                                 │
+│  The Sentry React Native Wizard will help you set up Sentry for your application.                 │
+│  Thank you for using Sentry :)                                 │
+│                                 │
+│  Version: 9.1.0                                 │
+│                                 │
+│  This wizard sends telemetry data and crash reports to Sentry. This helps us improve the Wizard.  │
+│  You can turn this off at any time by running sentry-wizard --disable-telemetry.                  │
+│                                 │
+├───────────────────────────────────────────────────────────────────────────────────────────────────╯
+│
+▲  You have uncommitted or untracked files in your repo:
+│  
+│  - frontend/package-lock.json
+│  - frontend/package.json
+│  - frontend/src/app/_layout.tsx
+│  - frontend/src/app/config/
+│  
+│  The wizard will create and update files.
+│
+◇  Do you want to continue anyway?
+│  Yes
+│
+◇  The @sentry/react-native package is already installed. Do you
+want to update it to the latest version?
+│  Yes
+│
+◇  Updated @sentry/react-native with NPM.
+│
+◇  Are you using Sentry SaaS or self-hosted Sentry?
+│  Sentry SaaS (sentry.io)
+│
+◇  Do you already have a Sentry account?
+│  No
+│
+●  If the browser window didn't open automatically, please open the following link to sign into Sentry:
+│  
+│  https://sentry.io/account/settings/wizard/mzphpvwhpxhpaqx33rday9yptx6x1d3xqjkl1ppju136k5sevi9vf0aszv6ejx5y/?signup=1&project_platform=react-native
+│
+◇  Login timed out. No worries - it happens to the best of us.
+│
+└  Please restart the Wizard and log in to complete the setup.
+keerthana@Mac-634 frontend % npx @sentry/wizard@latest -i reactNative --saas --org personal-lst --project react-native
+
+┌   Sentry React Native Wizard 
+│
+◇   ────────────────────────────────────────────────────────────────────────────────────────────────╮
+│                                 │
+│  The Sentry React Native Wizard will help you set up Sentry for your application.                 │
+│  Thank you for using Sentry :)                                 │
+│                                 │
+│  Version: 9.1.0                                 │
+│                                 │
+│  This wizard sends telemetry data and crash reports to Sentry. This helps us improve the Wizard.  │
+│  You can turn this off at any time by running sentry-wizard --disable-telemetry.                  │
+│                                 │
+├───────────────────────────────────────────────────────────────────────────────────────────────────╯
+│
+▲  You have uncommitted or untracked files in your repo:
+│  
+│  - frontend/package-lock.json
+│  - frontend/package.json
+│  - frontend/src/app/_layout.tsx
+│  - frontend/src/app/config/
+│  
+│  The wizard will create and update files.
+│
+◇  Do you want to continue anyway?
+│  Yes
+│
+◇  The @sentry/react-native package is already installed. Do you
+want to update it to the latest version?
+│  Yes
+│
+◇  Updated @sentry/react-native with NPM.
+│
+●  If the browser window didn't open automatically, please open the following link to log into Sentry:
+│  
+│  https://sentry.io/account/settings/wizard/aafztwvjmsxwgqoudl23aahq01x59fx55sv3tqs6u564m9jz9i4n3sj6xozfav5n/?org_slug=personal-lst&project_slug=react-native&project_platform=react-native
+│
+◇  Login complete.
+│
+◇  Selected project personal-lst/react-native
+│
+◇  Do you want to enable Logs? Structured logs allow you to send,
+view and query logs and parameters sent from your applications (See
+https://docs.sentry.io/platforms/react-native/logs/)
+│  Yes
+│
+●  Logs will be enabled with default settings. You can send logs using the Sentry.logger APIs.
+│
+◇  Do you want to enable Session Replay to help debug issues? (See
+https://docs.sentry.io/platforms/react-native/session-replay/)
+│  Yes
+│
+●  Session Replay will be enabled with default settings (replaysSessionSampleRate: 0.1, replaysOnErrorSampleRate: 1).
+│
+│  By default, all text content, images, and webviews will be masked for privacy. You can customize this in your code later.
+│
+◇  Do you want to enable the User Feedback Widget to collect
+feedback from your users? (See
+https://docs.sentry.io/platforms/react-native/user-feedback/)
+│  Yes
+│
+●  The User Feedback Widget will be enabled with default settings.You can show the widget by calling Sentry.showFeedbackWidget() in your code.
+│
+▲  Could not find main App file. Place the following code snippet close to the Apps Root component.
+│
+◇  Add the following code to your App.js or _layout.tsx file: (This ensures the Sentry SDK is ready to capture errors.)
+
+import * as Sentry from '@sentry/react-native';
+
+Sentry.init({
+  dsn: 'https://382f841f341f3c09b3ec0267aed3dcfc@o4512456913715200.ingest.us.sentry.io/4512456913911808',
+
+  // Adds more context data to events (IP address, cookies, user, etc.)
+  // For more information, visit: https://docs.sentry.io/platforms/react-native/data-management/data-collected/
+  sendDefaultPii: true,
+
+  // Enable Logs
+  enableLogs: true,
+
+  // Configure Session Replay
+  replaysSessionSampleRate: 0.1,
+  replaysOnErrorSampleRate: 1,
+  integrations: [Sentry.mobileReplayIntegration(), Sentry.feedbackIntegration()],
+
+  // uncomment the line below to enable Spotlight (https://spotlightjs.com)
+  // spotlight: __DEV__,
+});
+
+│
+◇  Did you apply the snippet above?
+│  Yes, continue!
+│
+▲  Could not find main App file. Please wrap your App's Root component.
+│
+◇  Add the following code to your App.js or _layout.tsx file:
+
+import * as Sentry from '@sentry/react-native';
+
+export default Sentry.wrap(App);
+
+│
+◇  Did you apply the snippet above?
+│  Yes, continue!
+│
+◆  Added Sentry Expo plugin to app.config.json.
+│
+◆  Added .env.local to .gitignore.
+│
+◆  Written .env.local.
+│
+◆  Created metro.config.js with Sentry configuration.
+│
+◆  Added auth token to android/sentry.properties for you to test uploading source maps and iOS debug files locally.
+│
+◆  Added default org and project to android/sentry.properties for you to test uploading source maps and iOS debug files locally.
+│
+◆  Added default url to android/sentry.properties for you to test uploading source maps and iOS debug files locally.
+│
+◆  Created android/sentry.properties.
+│
+▲  DO NOT commit auth token to your repository!
+│
+◆  Added Sentry RN Gradle Plugin to app/build.gradle.
+│
+◆  Android app/build.gradle saved.
+│
+◇  Optionally add a project-scoped MCP server configuration for the
+Sentry MCP?
+│  No
+│
+◇  To make sure everything is set up correctly, put the following code snippet into your application.
+│  The snippet will create a button that, when tapped, sends a test event to Sentry.
+│  
+│  After that check your project issues:
+│  
+│  https://personal-lst.sentry.io/issues/?project=4512456913911808
+
+<Button title='Try!' onPress={ () => { Sentry.captureException(newError('First error')) }}/>
+
+│
+◇  Have you successfully sent a test event?
+│  Yes
+│
+└  Everything is set up!
+
+   If you encounter any issues, let us know here: https://github.com/getsentry/sentry-react-native/issues
+
+keerthana@Mac-634 frontend % 

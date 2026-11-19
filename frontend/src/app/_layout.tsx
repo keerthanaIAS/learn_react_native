@@ -9,6 +9,23 @@ import {
 } from 'react-native';
 import BottomNavigation from '../components/BottomNavigation';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import * as Sentry from '@sentry/react-native';
+import './config/reactotron';
+
+Sentry.init({
+  dsn: 'https://382f841f341f3c09b3ec0267aed3dcfc@o4512456913715200.ingest.us.sentry.io/4512456913911808',
+
+  sendDefaultPii: false,
+  enableLogs: true,
+
+  replaysSessionSampleRate: 0.1,
+  replaysOnErrorSampleRate: 1,
+
+  integrations: [
+    Sentry.mobileReplayIntegration(),
+    Sentry.feedbackIntegration(),
+  ],
+});
 
 function WebHeader() {
   return (

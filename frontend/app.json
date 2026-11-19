@@ -8,7 +8,8 @@
     "scheme": "frontend",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/images/logo.png"
+      "icon": "./assets/images/logo.png",
+      "bundleIdentifier": "com.anonymous.frontend"
     },
     "web": {
       "favicon": "./assets/images/logo.png"
@@ -20,11 +21,11 @@
         "android.permission.FOREGROUND_SERVICE",
         "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK",
         "android.permission.CAMERA",
-        "android.permission.RECORD_AUDIO",
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.READ_CONTACTS",
-        "android.permission.WRITE_CONTACTS"
+        "android.permission.WRITE_CONTACTS",
+        "android.permission.RECORD_AUDIO"
       ],
       "package": "com.anonymous.frontend"
     },
@@ -80,7 +81,16 @@
           "contactsPermission": "Allow access to contacts to display your contacts."
         }
       ],
-      "expo-notifications"
+      "expo-notifications",
+      [
+        "@sentry/react-native/expo",
+        {
+          "url": "https://sentry.io/",
+          "project": "react-native",
+          "organization": "personal-lst"
+        }
+      ],
+      "expo-sharing"
     ],
     "experiments": {
       "typedRoutes": true,
