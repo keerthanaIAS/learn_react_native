@@ -1,9 +1,14 @@
-import { View, Text, Pressable, StyleSheet, ScrollView, Alert } from 'react-native';
+import { View, Text, Pressable, StyleSheet, ScrollView, Alert, Platform } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import ScreenBackground from '@/components/ScreenBackground';
 import * as Sentry from '@sentry/react-native';
 import Reactotron from './config/reactotron';
+import {
+  requestNotificationPermission,
+  sendInstantNotification,
+  scheduleTestNotification,
+} from './notification-test';
 
 type DemoItem = {
   title: string;
@@ -11,6 +16,7 @@ type DemoItem = {
   icon: keyof typeof Ionicons.glyphMap;
   route: string;
   color: string;
+  // action?: () => void;
 };
 
 const testSentry = () => {
@@ -187,8 +193,41 @@ const categories: {
           route: '/sensors/barcode-scanner-demo',
           color: '#47b853',
         },
+        {
+          title: 'File Mega Demo',
+          subtitle: 'Download, Compress, Upload, Share',
+          icon: 'document-attach-outline',
+          route: '/files/file-mega-demo',
+          color: '#E91E63',
+        },
       ],
     },
+    // {
+    //   title: 'Notification Testing',
+    //   items: [
+    //     {
+    //       title: 'Request Permission',
+    //       subtitle: 'Enable notifications',
+    //       icon: 'notifications-outline',
+    //       route: '/notification-demo',
+    //       color: '#FF9800',
+    //     },
+    //     {
+    //       title: 'Instant Notification',
+    //       subtitle: 'Send notification now',
+    //       icon: 'notifications',
+    //       route: '/notification-demo',
+    //       color: '#4CAF50',
+    //     },
+    //     {
+    //       title: 'Schedule Notification',
+    //       subtitle: 'Send after 5 seconds',
+    //       icon: 'alarm-outline',
+    //       route: '/notification-demo',
+    //       color: '#9C27B0',
+    //     },
+    //   ],
+    // },
   ];
 
 export default function HomeScreen() {
@@ -249,6 +288,103 @@ export default function HomeScreen() {
           </View>
         </View>
 
+        <View style={styles.categoryBlock}>
+          <Text style={styles.categoryTitle}>
+            Notification Testing
+          </Text>
+
+          <View style={styles.grid}>
+
+            {/* Permission */}
+            <Pressable
+              style={styles.card}
+              onPress={() => {
+                if (Platform.OS === 'web') {
+                  window.alert('Not supported. Test Expo notifications on Android or iOS.');
+                  return;
+                }
+
+                requestNotificationPermission();
+              }}
+            >
+              <View style={styles.iconCircle}>
+                <Ionicons
+                  name="notifications-outline"
+                  size={22}
+                  color="#FF9800"
+                />
+              </View>
+
+              <Text style={styles.cardTitle}>
+                Request Permission
+              </Text>
+
+              <Text style={styles.cardSubtitle}>
+                Enable notifications
+              </Text>
+            </Pressable>
+
+            {/* Instant Notification */}
+            <Pressable
+              style={styles.card}
+              onPress={() => {
+                if (Platform.OS === 'web') {
+                  window.alert('Not supported. Test Expo notifications on Android or iOS.');
+                  return;
+                }
+
+                sendInstantNotification();
+              }}
+            >
+              <View style={styles.iconCircle}>
+                <Ionicons
+                  name="notifications"
+                  size={22}
+                  color="#4CAF50"
+                />
+              </View>
+
+              <Text style={styles.cardTitle}>
+                Instant Notification
+              </Text>
+
+              <Text style={styles.cardSubtitle}>
+                Send notification now
+              </Text>
+            </Pressable>
+
+            {/* Scheduled Notification */}
+            <Pressable
+              style={styles.card}
+              onPress={() => {
+                if (Platform.OS === 'web') {
+                  window.alert('Not supported. Test Expo notifications on Android or iOS.');
+                  return;
+                }
+
+                scheduleTestNotification();
+              }}
+            >
+              <View style={styles.iconCircle}>
+                <Ionicons
+                  name="alarm-outline"
+                  size={22}
+                  color="#9C27B0"
+                />
+              </View>
+
+              <Text style={styles.cardTitle}>
+                Schedule Notification
+              </Text>
+
+              <Text style={styles.cardSubtitle}>
+                Send after 5 seconds
+              </Text>
+            </Pressable>
+
+          </View>
+        </View>
+
         {categories.map((category) => (
           <View key={category.title} style={styles.categoryBlock}>
             <Text style={styles.categoryTitle}>{category.title}</Text>
@@ -262,6 +398,13 @@ export default function HomeScreen() {
                     pressed && styles.cardPressed,
                   ]}
                   onPress={() => router.push(item.route as any)}
+                // onPress={() => {
+                //   if (item.action) {
+                //     item.action();
+                //   } else {
+                //     router.push(item.route as any);
+                //   }
+                // }}
                 >
                   <View
                     style={[

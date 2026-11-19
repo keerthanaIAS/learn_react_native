@@ -140,6 +140,12 @@ export default function SeamlessScrollDemo() {
           maxToRenderPerBatch={5}
           windowSize={7}
         />
+        {/* windowSize – controls the rendering window.
+        initialNumToRender – controls initial rendering.      
+        maxToRenderPerBatch – controls batch rendering.
+        getItemLayout – avoids dynamic layout measurement for fixed-size items.
+        onEndReachedThreshold – controls when pagination starts.
+         */}
 
       </View>
     </ScreenBackground>

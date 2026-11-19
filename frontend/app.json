@@ -90,7 +90,9 @@
           "organization": "personal-lst"
         }
       ],
-      "expo-sharing"
+      "expo-sharing",
+      "@sentry/react-native",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true,

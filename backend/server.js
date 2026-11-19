@@ -1,7 +1,9 @@
 
 const express = require('express');
 const cors = require('cors');
-
+const path = require('path');
+const fs = require('fs');
+const multer = require('multer');
 
 const app = express();
 
@@ -32,6 +34,24 @@ let students = [
 
 // Temporary OTP storage
 const otpStorage = new Map();
+
+// Create uploads folder if it doesn't exist
+const uploadDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir);
+}
+
+// 2. Configure Multer Storage
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, uploadDir);
+    },
+    filename: (req, file, cb) => {
+        // Save as: timestamp_originalname
+        cb(null, Date.now() + '_' + file.originalname);
+    }
+});
+const upload = multer({ storage });
 
 // Home API
 app.get('/', (req, res) => {
@@ -277,6 +297,38 @@ app.post('/resend-otp', (req, res) => {
         expiresIn: 300
     });
 });
+
+// 1. FILE DOWNLOAD ENDPOINT
+app.get('/download-sample', (req, res) => {
+    // Create a dummy text file to download
+    const fileContent = "Hello! This is a sample file downloaded from your Node.js backend.";
+    const filePath = path.join(__dirname, 'sample.txt');
+
+    fs.writeFileSync(filePath, fileContent);
+    res.download(filePath, 'student_sample.txt', (err) => {
+        if (err) console.log(err);
+        fs.unlinkSync(filePath); // Delete file after sending
+    });
+});
+
+// 2. FILE UPLOAD ENDPOINT
+app.post('/upload', upload.single('file'), (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ success: false, message: "No file received" });
+        }
+        console.log('File uploaded successfully:', req.file.filename);
+
+        res.json({
+            success: true,
+            message: `File uploaded successfully! Saved as ${req.file.filename}`
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Upload failed" });
+    }
+});
+
 
 const PORT = 3000;
 
