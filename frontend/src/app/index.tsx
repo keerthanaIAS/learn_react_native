@@ -200,6 +200,13 @@ const categories: {
           route: '/files/file-mega-demo',
           color: '#E91E63',
         },
+        {
+          title: 'Sentry User Test',
+          subtitle: 'Test Sentry with different users',
+          icon: 'bug-outline',
+          route: '/sentry-user-test',
+          color: '#E53935',
+        }
       ],
     },
     // {
