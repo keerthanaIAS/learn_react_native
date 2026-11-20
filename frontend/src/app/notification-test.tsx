@@ -1,6 +1,12 @@
-
 import * as Notifications from 'expo-notifications';
+import * as Device from 'expo-device';
+import Constants from 'expo-constants';
 import { Alert, Platform } from 'react-native';
+import {
+  registerPushToken,
+  notifyAllUsers,
+  notifyUserByMobile,
+} from '../services/notificationApi';
 
 // Configure foreground notification display
 Notifications.setNotificationHandler({
@@ -12,8 +18,8 @@ Notifications.setNotificationHandler({
   }),
 });
 
-// Request notification permission
-export const requestNotificationPermission = async () => {
+// 1. Request notification permission
+export const requestNotificationPermission = async (): Promise<boolean> => {
   try {
     console.log('Checking notification permission...');
 
@@ -28,9 +34,7 @@ export const requestNotificationPermission = async () => {
     let finalStatus = existingStatus;
 
     if (existingStatus !== 'granted') {
-      const { status } =
-        await Notifications.requestPermissionsAsync();
-
+      const { status } = await Notifications.requestPermissionsAsync();
       finalStatus = status;
     }
 
@@ -39,9 +43,7 @@ export const requestNotificationPermission = async () => {
       return false;
     }
 
-    Alert.alert('Success', 'Notification permission granted!');
     console.log('Notification permission granted');
-
     return true;
   } catch (error) {
     console.error('Permission error:', error);
@@ -50,11 +52,10 @@ export const requestNotificationPermission = async () => {
   }
 };
 
-// Instant notification
+// 2. Local instant notification
 export const sendInstantNotification = async () => {
   try {
     const granted = await requestNotificationPermission();
-
     if (!granted) return;
 
     await Notifications.scheduleNotificationAsync({
@@ -72,11 +73,10 @@ export const sendInstantNotification = async () => {
   }
 };
 
-// Notification after 5 seconds
+// 3. Local scheduled notification (after 5 seconds)
 export const scheduleTestNotification = async () => {
   try {
     const granted = await requestNotificationPermission();
-
     if (!granted) return;
 
     await Notifications.scheduleNotificationAsync({
@@ -92,9 +92,84 @@ export const scheduleTestNotification = async () => {
     });
 
     Alert.alert('Scheduled', 'Notification will appear in 5 seconds.');
-
     console.log('Notification scheduled');
   } catch (error) {
     console.error('Scheduling error:', error);
+  }
+};
+
+// 4. Get Expo Push Token & register it on backend for the logged-in user
+export const registerDeviceForPushNotifications = async (
+  mobile: string
+): Promise<string | null> => {
+  try {
+    if (Platform.OS === 'web') {
+      console.log('Push notifications are not supported on web.');
+      return null;
+    }
+
+    if (!Device.isDevice) {
+      Alert.alert(
+        'Physical Device Required',
+        'Push notifications only work on a physical phone.'
+      );
+      return null;
+    }
+
+    const granted = await requestNotificationPermission();
+    if (!granted) return null;
+
+    // Fetch EAS projectId if configured in app.json / app.config.js
+    const projectId =
+      Constants?.expoConfig?.extra?.eas?.projectId ??
+      Constants?.easConfig?.projectId;
+
+    const tokenResponse = await Notifications.getExpoPushTokenAsync(
+      projectId ? { projectId } : undefined
+    );
+    const expoPushToken = tokenResponse.data;
+    console.log('Expo Push Token:', expoPushToken);
+
+    // Save token against logged-in mobile number via API service
+    await registerPushToken(mobile, expoPushToken);
+
+    return expoPushToken;
+  } catch (error) {
+    console.error('Push registration error:', error);
+    Alert.alert('Error', 'Failed to register push notification token.');
+    return null;
+  }
+};
+
+// 5. Trigger backend broadcast push notification to all logged-in users
+export const sendPushToAllUsers = async (
+  title: string,
+  body: string,
+  data?: Record<string, any>
+) => {
+  try {
+    const result = await notifyAllUsers(title, body, data);
+    Alert.alert('Broadcast Sent', `Sent to ${result.sentToCount} device(s).`);
+    return result;
+  } catch (error) {
+    console.error('Broadcast push error:', error);
+    Alert.alert('Error', 'Failed to send broadcast notification.');
+  }
+};
+
+// 6. Trigger backend push notification to a specific user by mobile number
+export const sendPushToParticularUser = async (
+  mobile: string,
+  title: string,
+  body: string,
+  data?: Record<string, any>
+) => {
+  try {
+    const result = await notifyUserByMobile(mobile, title, body, data);
+    Alert.alert('Notification Sent', `Push notification sent to ${mobile}.`);
+    return result;
+  } catch (error) {
+    console.error('Individual push error:', error);
+    Alert.alert('Error', `Failed to send notification to ${mobile}.`);
   }
 };

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "581940152913",
+    "project_id": "learn-react-native-de88f",
+    "storage_bucket": "learn-react-native-de88f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:581940152913:android:cd0f60dd1bc9c0148d4670",
+        "android_client_info": {
+          "package_name": "com.anonymous.frontend"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQLL3UoH2SjfK9REekD-l2XvD0dPnD7mo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

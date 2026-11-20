@@ -4,6 +4,8 @@ const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
+const { Expo } = require('expo-server-sdk');
+const expo = new Expo();
 
 const app = express();
 
@@ -52,6 +54,138 @@ const storage = multer.diskStorage({
     }
 });
 const upload = multer({ storage });
+
+// Temporary in-memory push token storage: Map<mobile, Set<expoPushToken>>
+const userPushTokens = new Map();
+
+// Helper function to send push messages via Expo
+async function sendExpoMessages(tokens, title, body, data = {}) {
+    const messages = [];
+
+    for (const token of tokens) {
+        if (!Expo.isExpoPushToken(token)) {
+            console.warn(`Invalid Expo push token skipped: ${token}`);
+            continue;
+        }
+        messages.push({
+            to: token,
+            sound: 'default',
+            title,
+            body,
+            data,
+        });
+    }
+
+    const chunks = expo.chunkPushNotifications(messages);
+    const tickets = [];
+
+    for (const chunk of chunks) {
+        try {
+            const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+            tickets.push(...ticketChunk);
+        } catch (error) {
+            console.error('Error sending push notification chunk:', error);
+        }
+    }
+
+    return tickets;
+}
+
+// 1. REGISTER PUSH TOKEN (Call this right after /verify-otp succeeds)
+app.post('/register-token', (req, res) => {
+    const { mobile, expoPushToken } = req.body;
+
+    if (!mobile || !expoPushToken) {
+        return res.status(400).json({
+            success: false,
+            message: 'mobile and expoPushToken are required',
+        });
+    }
+
+    if (!Expo.isExpoPushToken(expoPushToken)) {
+        return res.status(400).json({
+            success: false,
+            message: 'Invalid Expo push token format',
+        });
+    }
+
+    if (!userPushTokens.has(mobile)) {
+        userPushTokens.set(mobile, new Set());
+    }
+    userPushTokens.get(mobile).add(expoPushToken);
+
+    console.log(`Registered token for ${mobile}:`, expoPushToken);
+
+    res.json({
+        success: true,
+        message: 'Push token registered successfully',
+    });
+});
+
+// 2. SEND NOTIFICATION TO ALL LOGGED-IN USERS
+app.post('/notify-all', async (req, res) => {
+    const { title, body, data } = req.body;
+
+    if (!title || !body) {
+        return res.status(400).json({
+            success: false,
+            message: 'title and body are required',
+        });
+    }
+
+    // Collect all unique tokens across all users
+    const allTokens = new Set();
+    for (const tokenSet of userPushTokens.values()) {
+        for (const token of tokenSet) {
+            allTokens.add(token);
+        }
+    }
+
+    if (allTokens.size === 0) {
+        return res.status(404).json({
+            success: false,
+            message: 'No registered devices found',
+        });
+    }
+
+    const tickets = await sendExpoMessages([...allTokens], title, body, data);
+
+    res.json({
+        success: true,
+        sentToCount: allTokens.size,
+        tickets,
+    });
+});
+
+// 3. SEND NOTIFICATION TO A SPECIFIC USER BY MOBILE NUMBER
+app.post('/notify-user/:mobile', async (req, res) => {
+    const { mobile } = req.params;
+    const { title, body, data } = req.body;
+
+    if (!title || !body) {
+        return res.status(400).json({
+            success: false,
+            message: 'title and body are required',
+        });
+    }
+
+    const tokenSet = userPushTokens.get(mobile);
+
+    if (!tokenSet || tokenSet.size === 0) {
+        return res.status(404).json({
+            success: false,
+            message: `No active devices found for mobile ${mobile}`,
+        });
+    }
+
+    const tickets = await sendExpoMessages([...tokenSet], title, body, data);
+
+    res.json({
+        success: true,
+        mobile,
+        tickets,
+    });
+});
 
 // Home API
 app.get('/', (req, res) => {

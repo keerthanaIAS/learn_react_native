@@ -544,3 +544,12 @@ Sentry MCP?
    If you encounter any issues, let us know here: https://github.com/getsentry/sentry-react-native/issues
 
 keerthana@Mac-634 frontend % 
+
+
+https://expo.dev/login?client_id=eas-cli&redirect_uri=http://localhost:59232/auth/callback&response_type=code&code_challenge=x8k7kLkkBbQWMZ8lu5PpkdvPCgMnCjpy3cJPjepCYCw&code_challenge_method=S256&state=n4HD13tYVF48137WK7n04sq7Lws_KGJv7bml5sM5haQ
+
+
+Application
+eas-cli
+Redirects to
+localhost:59232

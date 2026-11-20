@@ -8,6 +8,9 @@ import {
   requestNotificationPermission,
   sendInstantNotification,
   scheduleTestNotification,
+  registerDeviceForPushNotifications,
+  sendPushToAllUsers,
+  sendPushToParticularUser,
 } from './notification-test';
 
 type DemoItem = {
@@ -386,6 +389,102 @@ export default function HomeScreen() {
 
               <Text style={styles.cardSubtitle}>
                 Send after 5 seconds
+              </Text>
+            </Pressable>
+
+            {/* Register Push Token */}
+            <Pressable
+              style={styles.card}
+              onPress={() => {
+                if (Platform.OS === 'web') {
+                  window.alert('Not supported. Test Expo notifications on Android or iOS.');
+                  return;
+                }
+                // Uses a test mobile number (or pass your logged-in user's mobile)
+                registerDeviceForPushNotifications('9876543210');
+              }}
+            >
+              <View style={styles.iconCircle}>
+                <Ionicons
+                  name="key-outline"
+                  size={22}
+                  color="#208AEF"
+                />
+              </View>
+
+              <Text style={styles.cardTitle}>
+                Register Push Token
+              </Text>
+
+              <Text style={styles.cardSubtitle}>
+                Save token for 9876543210
+              </Text>
+            </Pressable>
+
+            {/* Push to Particular User */}
+            <Pressable
+              style={styles.card}
+              onPress={() => {
+                if (Platform.OS === 'web') {
+                  window.alert('Not supported. Test Expo notifications on Android or iOS.');
+                  return;
+                }
+
+                sendPushToParticularUser(
+                  '9876543210',
+                  'Personal Update',
+                  'Tap to view Student #1 details!',
+                  { screen: 'students', studentId: 1 }
+                );
+              }}
+            >
+              <View style={styles.iconCircle}>
+                <Ionicons
+                  name="person-outline"
+                  size={22}
+                  color="#009688"
+                />
+              </View>
+
+              <Text style={styles.cardTitle}>
+                Push: Single User
+              </Text>
+
+              <Text style={styles.cardSubtitle}>
+                Notify 9876543210
+              </Text>
+            </Pressable>
+
+            {/* Push to All Logged-In Users */}
+            <Pressable
+              style={styles.card}
+              onPress={() => {
+                if (Platform.OS === 'web') {
+                  window.alert('Not supported. Test Expo notifications on Android or iOS.');
+                  return;
+                }
+
+                sendPushToAllUsers(
+                  'College Announcement',
+                  'All students: check the updated list!',
+                  { screen: 'students' }
+                );
+              }}
+            >
+              <View style={styles.iconCircle}>
+                <Ionicons
+                  name="megaphone-outline"
+                  size={22}
+                  color="#E91E63"
+                />
+              </View>
+
+              <Text style={styles.cardTitle}>
+                Push: Broadcast All
+              </Text>
+
+              <Text style={styles.cardSubtitle}>
+                Notify all active users
               </Text>
             </Pressable>
 

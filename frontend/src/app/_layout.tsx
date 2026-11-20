@@ -11,6 +11,8 @@ import BottomNavigation from '../components/BottomNavigation';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as Sentry from '@sentry/react-native';
 import './config/reactotron';
+import { useEffect } from 'react';
+import * as Notifications from 'expo-notifications';
 
 Sentry.init({
   dsn: 'https://382f841f341f3c09b3ec0267aed3dcfc@o4512456913715200.ingest.us.sentry.io/4512456913911808',
@@ -58,6 +60,25 @@ function WebHeader() {
 
 export default function RootLayout() {
   const isWeb = Platform.OS === 'web';
+
+  useEffect(() => {
+    if (Platform.OS === 'web') return;
+
+    const subscription = Notifications.addNotificationResponseReceivedListener(
+      (response) => {
+        const data = response.notification.request.content.data;
+        console.log('Notification tapped with data:', data);
+
+        if (data?.screen === 'students' && data?.studentId) {
+          router.push(`/students/${data.studentId}` as any);
+        } else if (data?.screen === 'students') {
+          router.push('/students' as any);
+        }
+      }
+    );
+
+    return () => subscription.remove();
+  }, []);
 
   return (
     <>
